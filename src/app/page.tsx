@@ -39,6 +39,8 @@ import {
   ChevronRight,
   Split,
   FileBarChart,
+  Cpu,
+  Plus,
 } from "lucide-react"
 
 interface WorkflowStep {
@@ -51,6 +53,7 @@ interface WorkflowStep {
   tools: string[]
   integrations?: string[]
   branches?: string[]
+  features?: string[]
 }
 
 interface SimulationEnvironment {
@@ -413,85 +416,107 @@ const quickPrompts = [
   "Analyze sensor data and suggest calibration",
 ]
 
-// CORRECTED workflow order to match the PDF diagram with branching
+// CORRECTED workflow order to match the enhanced PDF diagram with detailed features
 const workflowSteps: WorkflowStep[] = [
   {
-    id: "cad",
-    title: "CAD Design",
-    description: "3D modeling and mechanical design using Fusion360",
+    id: "mechanical",
+    title: "Mechanical Design",
+    description: "CAD integration, URDF/XML management with LLM assistance",
     icon: <Box className="h-6 w-6" />,
     status: "completed",
     progress: 100,
-    tools: ["Fusion360", "SolidWorks", "AutoCAD"],
+    tools: ["CAD/Fusion360", "URDF Creator", "XML Editor", "LLM Prompt Assistant"],
     integrations: ["GitHub", "Version Control"],
-  },
-  {
-    id: "mech-design",
-    title: "Mechanical Design",
-    description: "Convert CAD models to URDF/XML format for simulation",
-    icon: <Cog className="h-6 w-6" />,
-    status: "completed",
-    progress: 85,
-    tools: ["URDF", "XML", "ROS"],
-    integrations: ["GitHub", "Bitbucket"],
+    features: [
+      "Integrate CAD/Fusion 360",
+      "Directly Create or Import URDF/xml",
+      "Use LLM Prompt for design assistance",
+      "Export URDF/xml files"
+    ]
   },
   {
     id: "control",
-    title: "Control System",
-    description: "Design control algorithms and system architecture",
+    title: "Build Control System", 
+    description: "Multi-approach controller development with simulation compatibility",
     icon: <Settings className="h-6 w-6" />,
     status: "in-progress",
     progress: 70,
-    tools: ["ROS Control", "PID Controllers", "State Machines"],
+    tools: ["Code Editor", "Controller Import", "GUI Builder", "Format Converter"],
     integrations: ["GitHub", "JIRA"],
-    branches: ["hardware", "simulation"],
-  },
-  {
-    id: "hardware",
-    title: "Hardware Deployment",
-    description: "Deploy control systems to physical hardware",
-    icon: <HardDrive className="h-6 w-6" />,
-    status: "pending",
-    progress: 0,
-    tools: ["ROS", "Hardware Controllers", "Sensors"],
-    integrations: ["GitHub", "CI/CD"],
-  },
-  {
-    id: "data",
-    title: "Data Collection",
-    description: "Gather data from hardware experiments and training",
-    icon: <Database className="h-6 w-6" />,
-    status: "pending",
-    progress: 0,
-    tools: ["Data Logger", "Sensors", "Analytics"],
-    integrations: ["Database", "Cloud Storage"],
+    branches: ["simulation"],
+    features: [
+      "Build with code",
+      "Import Existing Controller", 
+      "Build with GUI",
+      "Convert to Simulation Compatible Format"
+    ]
   },
   {
     id: "simulation",
     title: "Simulation",
-    description: "Test and validate designs in virtual environments",
+    description: "Multi-physics engine testing with automated reporting",
     icon: <Play className="h-6 w-6" />,
-    status: "in-progress",
+    status: "in-progress", 
     progress: 60,
-    tools: ["Gazebo", "Genesis", "IsaacSim"],
+    tools: ["Genesis AI", "Isaac Sim", "Gazebo", "Cloud Platform"],
     integrations: ["JIRA", "GitHub"],
+    features: [
+      "Integrate Physics Engine (Genesis AI, Isaac Sim, Gazebo, etc.)",
+      "Setup the Simulation Environment", 
+      "Import the Robot",
+      "Integrate the Controller in the Robot",
+      "Define Task and Setup Reward Function",
+      "Run Simulation in Local System/Cloud",
+      "Train Controller",
+      "Automated Report Generation",
+      "Export Firmware for the Robot"
+    ]
+  },
+  {
+    id: "hardware",
+    title: "Hardware Training",
+    description: "Physical robot deployment and real-world testing",
+    icon: <Cpu className="h-6 w-6" />,
+    status: "pending",
+    progress: 0,
+    tools: ["Robot Hardware", "Sensor Integration", "Actuator Control", "Safety Monitoring"],
+    integrations: ["Hardware APIs", "Sensor Networks", "Cloud Platform"],
+    features: [
+      "Deploy trained model to physical robot",
+      "Hardware sensor integration and calibration",
+      "Real-world environment testing",
+      "Performance validation against simulation",
+      "Safety monitoring and emergency protocols",
+      "Data collection from physical trials",
+      "Hardware-software optimization",
+      "Real-time feedback and adjustments"
+    ]
   },
   {
     id: "export",
     title: "Export & Reports",
-    description: "Generate documentation and export project files",
+    description: "Comprehensive output generation and documentation",
     icon: <FileText className="h-6 w-6" />,
     status: "pending",
     progress: 0,
-    tools: ["PDF Generator", "Documentation", "File Export"],
+    tools: ["Report Generator", "File Exporter", "Documentation", "Data Analyzer"],
     integrations: ["JIRA", "Confluence"],
+    features: [
+      "Mechanical Design Files",
+      "Robot Firmwares", 
+      "Simulation Test Report",
+      "Hardware Training Results",
+      "Real-time Data Export",
+      "Automated Documentation"
+    ]
   },
 ]
 
 const simulationEnvironments: SimulationEnvironment[] = [
-  { name: "Gazebo", status: "active", progress: 75, instances: 3 },
-  { name: "Genesis", status: "active", progress: 45, instances: 2 },
-  { name: "IsaacSim", status: "idle", progress: 0, instances: 0 },
+  { name: "Genesis AI", status: "active", progress: 75, instances: 3 },
+  { name: "Isaac Sim", status: "active", progress: 45, instances: 2 },
+  { name: "Gazebo", status: "idle", progress: 0, instances: 0 },
+  { name: "Cloud Platform", status: "active", progress: 90, instances: 1 },
 ]
 
 const systemLogs = [
@@ -507,6 +532,328 @@ const integrationTools = [
   { name: "Bitbucket", icon: <GitBranch className="h-4 w-4" />, status: "connected" },
   { name: "JIRA", icon: <Settings className="h-4 w-4" />, status: "connected" },
   { name: "CI/CD", icon: <Zap className="h-4 w-4" />, status: "pending" },
+]
+
+interface OutputCard {
+  id: string
+  title: string
+  description: string
+  icon: React.ReactNode
+  sourceModule: string
+  outputType: string
+  files: string[]
+  status: "available" | "generating" | "pending"
+  lastGenerated?: string
+  fileSize?: string
+}
+
+const outputCards: OutputCard[] = [
+  {
+    id: "urdf-xml",
+    title: "URDF/XML Files",
+    description: "Exported mechanical design files from CAD integration",
+    icon: <FileText className="h-6 w-6" />,
+    sourceModule: "Mechanical Design",
+    outputType: "Design Files",
+    files: ["robot_model.urdf", "robot_description.xml", "materials.xml", "joints_config.yaml"],
+    status: "available",
+    lastGenerated: "2025-09-13 14:30:15",
+    fileSize: "2.4 MB"
+  },
+  {
+    id: "robot-firmware",
+    title: "Robot Firmwares",
+    description: "Compiled firmwares from simulation training completion",
+    icon: <Cpu className="h-6 w-6" />,
+    sourceModule: "Simulation",
+    outputType: "Firmware Files",
+    files: ["controller_v2.1.hex", "sensor_drivers.bin", "motion_planner.elf", "safety_monitor.firmware"],
+    status: "available",
+    lastGenerated: "2025-09-13 14:25:42",
+    fileSize: "8.7 MB"
+  },
+  {
+    id: "simulation-report",
+    title: "Simulation Test Report",
+    description: "Automated performance and test analysis from simulation",
+    icon: <FileBarChart className="h-6 w-6" />,
+    sourceModule: "Simulation",
+    outputType: "Performance Report",
+    files: ["simulation_report.pdf", "test_metrics.json", "performance_charts.png", "error_analysis.csv"],
+    status: "available",
+    lastGenerated: "2025-09-13 14:32:08",
+    fileSize: "15.2 MB"
+  },
+  {
+    id: "hardware-data",
+    title: "Hardware Test Data",
+    description: "Real-time data and hardware test results from physical trials",
+    icon: <Database className="h-6 w-6" />,
+    sourceModule: "Hardware Training",
+    outputType: "Test Data & Reports",
+    files: ["hardware_tests.json", "sensor_logs.csv", "real_time_data.log", "hardware_report.pdf"],
+    status: "pending",
+    lastGenerated: undefined,
+    fileSize: undefined
+  }
+]
+
+interface UrdfTemplate {
+  id: string
+  name: string
+  description: string
+  category: string
+  content: string
+}
+
+const urdfTemplates: UrdfTemplate[] = [
+  {
+    id: "blank",
+    name: "Blank URDF",
+    description: "Start with an empty URDF template",
+    category: "Basic",
+    content: `<?xml version="1.0"?>
+<robot name="my_robot">
+  <!-- Robot description goes here -->
+  
+  <!-- Example link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="1 1 1"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="1 1 1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="0.166" ixy="0" ixz="0" iyy="0.166" iyz="0" izz="0.166"/>
+    </inertial>
+  </link>
+  
+</robot>`
+  },
+  {
+    id: "robotic_arm",
+    name: "6-DOF Robotic Arm",
+    description: "Standard 6 degree-of-freedom robotic arm",
+    category: "Manipulator",
+    content: `<?xml version="1.0"?>
+<robot name="robotic_arm">
+  
+  <!-- Base Link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <cylinder radius="0.1" length="0.1"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.1" length="0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="2.0"/>
+      <inertia ixx="0.01" ixy="0" ixz="0" iyy="0.01" iyz="0" izz="0.02"/>
+    </inertial>
+  </link>
+
+  <!-- Link 1 -->
+  <link name="link_1">
+    <visual>
+      <geometry>
+        <cylinder radius="0.05" length="0.3"/>
+      </geometry>
+      <material name="blue">
+        <color rgba="0 0 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.05" length="0.3"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="1.0"/>
+      <inertia ixx="0.008" ixy="0" ixz="0" iyy="0.008" iyz="0" izz="0.0025"/>
+    </inertial>
+  </link>
+
+  <!-- Joint 1 -->
+  <joint name="joint_1" type="revolute">
+    <parent link="base_link"/>
+    <child link="link_1"/>
+    <origin xyz="0 0 0.05" rpy="0 0 0"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-3.14159" upper="3.14159" effort="100" velocity="2"/>
+  </joint>
+
+  <!-- Add more links and joints as needed -->
+  
+</robot>`
+  },
+  {
+    id: "mobile_robot",
+    name: "Mobile Robot Base",
+    description: "Wheeled mobile robot platform",
+    category: "Mobile",
+    content: `<?xml version="1.0"?>
+<robot name="mobile_robot">
+  
+  <!-- Base Link -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.5 0.3 0.1"/>
+      </geometry>
+      <material name="red">
+        <color rgba="1 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.5 0.3 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="5.0"/>
+      <inertia ixx="0.08" ixy="0" ixz="0" iyy="0.21" iyz="0" izz="0.25"/>
+    </inertial>
+  </link>
+
+  <!-- Left Wheel -->
+  <link name="left_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.0025" ixy="0" ixz="0" iyy="0.0025" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+
+  <!-- Left Wheel Joint -->
+  <joint name="left_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="left_wheel"/>
+    <origin xyz="0 0.175 -0.05" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+
+  <!-- Right Wheel -->
+  <link name="right_wheel">
+    <visual>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+      <material name="black">
+        <color rgba="0 0 0 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.1" length="0.05"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.5"/>
+      <inertia ixx="0.0025" ixy="0" ixz="0" iyy="0.0025" iyz="0" izz="0.005"/>
+    </inertial>
+  </link>
+
+  <!-- Right Wheel Joint -->
+  <joint name="right_wheel_joint" type="continuous">
+    <parent link="base_link"/>
+    <child link="right_wheel"/>
+    <origin xyz="0 -0.175 -0.05" rpy="1.5708 0 0"/>
+    <axis xyz="0 0 1"/>
+  </joint>
+  
+</robot>`
+  },
+  {
+    id: "quadruped",
+    name: "Quadruped Robot",
+    description: "Four-legged robot template",
+    category: "Legged",
+    content: `<?xml version="1.0"?>
+<robot name="quadruped_robot">
+  
+  <!-- Base Body -->
+  <link name="base_link">
+    <visual>
+      <geometry>
+        <box size="0.4 0.2 0.1"/>
+      </geometry>
+      <material name="brown">
+        <color rgba="0.6 0.4 0.2 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <box size="0.4 0.2 0.1"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="3.0"/>
+      <inertia ixx="0.02" ixy="0" ixz="0" iyy="0.08" iyz="0" izz="0.09"/>
+    </inertial>
+  </link>
+
+  <!-- Front Left Leg -->
+  <link name="front_left_leg">
+    <visual>
+      <geometry>
+        <cylinder radius="0.02" length="0.2"/>
+      </geometry>
+      <material name="grey">
+        <color rgba="0.5 0.5 0.5 1"/>
+      </material>
+    </visual>
+    <collision>
+      <geometry>
+        <cylinder radius="0.02" length="0.2"/>
+      </geometry>
+    </collision>
+    <inertial>
+      <mass value="0.2"/>
+      <inertia ixx="0.0007" ixy="0" ixz="0" iyy="0.0007" iyz="0" izz="0.00004"/>
+    </inertial>
+  </link>
+
+  <!-- Front Left Hip Joint -->
+  <joint name="front_left_hip" type="revolute">
+    <parent link="base_link"/>
+    <child link="front_left_leg"/>
+    <origin xyz="0.15 0.08 -0.05" rpy="0 0 0"/>
+    <axis xyz="1 0 0"/>
+    <limit lower="-1.57" upper="1.57" effort="50" velocity="5"/>
+  </joint>
+
+  <!-- Add more legs following similar pattern -->
+  
+</robot>`
+  }
 ]
 
 const reportSummary = {
@@ -562,6 +909,15 @@ export default function RoboticsWorkflow() {
   const [showCardDetails, setShowCardDetails] = useState(false)
   const [selectedCardDetails, setSelectedCardDetails] = useState<WorkflowStep | null>(null)
   const [showExportSection, setShowExportSection] = useState(false)
+  const [showOutputDetails, setShowOutputDetails] = useState(false)
+  const [selectedOutputCard, setSelectedOutputCard] = useState<OutputCard | null>(null)
+  const [showUrdfEditor, setShowUrdfEditor] = useState(false)
+  const [urdfContent, setUrdfContent] = useState("")
+  const [selectedUrdfTemplate, setSelectedUrdfTemplate] = useState("blank")
+  const [urdfFileName, setUrdfFileName] = useState("robot_model.urdf")
+  const [isUrdfValid, setIsUrdfValid] = useState(true)
+  const [urdfValidationErrors, setUrdfValidationErrors] = useState<string[]>([])
+  const [showUrdfPreview, setShowUrdfPreview] = useState(false)
 
   const [selectedVLAModel, setSelectedVLAModel] = useState<string>("gpt-4-vision")
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
@@ -576,6 +932,23 @@ export default function RoboticsWorkflow() {
   const [currentMessage, setCurrentMessage] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [uploadedImage, setUploadedImage] = useState<string | null>(null)
+
+  // VS Code integration state variables
+  const [mechanicalWorkspacePath] = useState("mechanical_design")
+  const [currentEditingFile, setCurrentEditingFile] = useState<string | null>(null)
+  const [isFileBeingEdited, setIsFileBeingEdited] = useState(false)
+  const [lastModifiedTime, setLastModifiedTime] = useState<Date | null>(null)
+  const [vscodeWatcher, setVscodeWatcher] = useState<NodeJS.Timeout | null>(null)
+  const [isVSCodeOpen, setIsVSCodeOpen] = useState(false)
+  const [openWithVSCode, setOpenWithVSCode] = useState(true)
+  
+  // Track created/imported files in mechanical design
+  const [mechanicalFiles, setMechanicalFiles] = useState<Array<{
+    name: string;
+    type: string;
+    createdAt: string;
+    size?: string;
+  }>>([])
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -674,12 +1047,479 @@ export default function RoboticsWorkflow() {
       event.stopPropagation()
     }
 
+    // Removed mechanical design double-click - now handled via button in card details
     if (stepId === "simulation") {
       console.log("Opening simulation details modal") // Debug log
       setShowSimulationDetails(true)
     } else if (stepId === "export") {
       console.log("Opening Export & Reports section") // Debug log
       setShowExportSection(true)
+    }
+  }
+
+  const handleOutputCardClick = (outputCard: OutputCard) => {
+    setSelectedOutputCard(outputCard)
+    setShowOutputDetails(true)
+  }
+
+  const getOutputStatusColor = (status: string) => {
+    switch (status) {
+      case "available":
+        return "bg-green-100 text-green-800"
+      case "generating":
+        return "bg-yellow-100 text-yellow-800"
+      case "pending":
+        return "bg-gray-100 text-gray-800"
+      default:
+        return "bg-gray-100 text-gray-800"
+    }
+  }
+
+  const getOutputStatusIcon = (status: string) => {
+    switch (status) {
+      case "available":
+        return <CheckCircle className="h-4 w-4 text-green-600" />
+      case "generating":
+        return <Clock className="h-4 w-4 text-yellow-600" />
+      case "pending":
+        return <AlertCircle className="h-4 w-4 text-gray-600" />
+      default:
+        return <AlertCircle className="h-4 w-4 text-gray-600" />
+    }
+  }
+
+  // URDF Editor Functions
+  const validateUrdf = (content: string): { isValid: boolean; errors: string[] } => {
+    const errors: string[] = []
+    
+    // Basic XML validation
+    try {
+      const parser = new DOMParser()
+      const xmlDoc = parser.parseFromString(content, "text/xml")
+      const parseError = xmlDoc.getElementsByTagName("parsererror")
+      
+      if (parseError.length > 0) {
+        errors.push("Invalid XML syntax")
+      }
+    } catch (error) {
+      errors.push("XML parsing failed")
+    }
+
+    // URDF-specific validation
+    if (!content.includes("<robot")) {
+      errors.push("Missing <robot> root element")
+    }
+    
+    if (!content.includes('name="')) {
+      errors.push("Robot must have a name attribute")
+    }
+
+    // Check for required elements
+    const requiredElements = ["link", "joint"]
+    requiredElements.forEach(element => {
+      if (!content.includes(`<${element}`)) {
+        errors.push(`Missing required element: <${element}>`)
+      }
+    })
+
+    return {
+      isValid: errors.length === 0,
+      errors
+    }
+  }
+
+  const loadUrdfTemplate = (templateId: string) => {
+    const template = urdfTemplates.find(t => t.id === templateId)
+    if (template) {
+      setUrdfContent(template.content)
+      setSelectedUrdfTemplate(templateId)
+      setUrdfFileName(`${template.name.toLowerCase().replace(/\s+/g, '_')}.urdf`)
+      
+      // Validate the template
+      const validation = validateUrdf(template.content)
+      setIsUrdfValid(validation.isValid)
+      setUrdfValidationErrors(validation.errors)
+    }
+  }
+
+  // File import handler
+  const handleUrdfImport = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        const content = e.target?.result as string
+        setUrdfContent(content)
+        setUrdfFileName(file.name)
+        
+        // Validate the imported content
+        const validation = validateUrdf(content)
+        setIsUrdfValid(validation.isValid)
+        setUrdfValidationErrors(validation.errors)
+      }
+      reader.readAsText(file)
+    }
+  }
+
+  // Download URDF file
+  const downloadUrdf = () => {
+    if (!urdfContent) {
+      alert('❌ No content to download. Please select a template or import a file first.')
+      return
+    }
+
+    const blob = new Blob([urdfContent], { type: 'text/xml' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = urdfFileName
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+  }
+
+  const createFileAndOpenInVSCode = async (content: string, filename: string) => {
+    try {
+      const workspacePath = `c:\\Users\\Ritu\\robotics-workflow\\${mechanicalWorkspacePath}`
+      const filePath = `${workspacePath}\\${filename}`
+      
+      console.log(`Creating file: ${filePath}`)
+      console.log(`Content length: ${content.length} characters`)
+      
+      // Set current editing file state
+      setCurrentEditingFile(filename)
+      setIsFileBeingEdited(true)
+      setLastModifiedTime(new Date())
+      
+      // Check if we're in Electron environment with our custom APIs
+      const isElectron = typeof window !== 'undefined' && (window as any).electronAPI
+      
+      if (isElectron) {
+        try {
+          console.log('Using Electron APIs for file operations and VS Code opening...')
+          
+          // Use Electron APIs to write file and open VS Code
+          const writeResult = (window as any).electronAPI.writeFile(filePath, content)
+          
+          if (writeResult.success) {
+            console.log('File written successfully, opening in VS Code...')
+            
+            // Open in VS Code using Electron API
+            const vscodeResult = await (window as any).electronAPI.openInVSCode(filePath)
+            
+            if (vscodeResult.success) {
+              alert(`🚀 Success! File "${filename}" created and opened in VS Code!\n\n📁 Location: ${filePath}\n🔧 Method: ${vscodeResult.method}\n\n✏️ Edit the file in VS Code, then use "Re-import from VS Code" to bring changes back to the editor.`)
+            } else {
+              alert(`✅ File created successfully: ${filePath}\n\n❌ VS Code opening failed: ${vscodeResult.error}\n\n🔧 Please manually open VS Code with: code "${filePath}"`)
+            }
+          } else {
+            throw new Error(`File write failed: ${writeResult.error}`)
+          }
+          
+        } catch (electronError) {
+          console.error('Electron API failed:', electronError)
+          fallbackDownload(content, filename, filePath)
+        }
+      } else {
+        console.log('Browser environment detected, using download fallback...')
+        fallbackDownload(content, filename, filePath)
+      }
+      
+    } catch (error) {
+      console.error('Error creating file and opening VS Code:', error)
+      alert('❌ Error creating file. Please check console for details.')
+    }
+  }
+
+  const fallbackDownload = (content: string, filename: string, filePath: string) => {
+    // Browser fallback - download file
+    const blob = new Blob([content], { type: 'text/xml' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = filename
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    
+    showDownloadInstructions(filename, filePath)
+  }
+
+  const showDownloadInstructions = (filename: string, filePath: string) => {
+    alert(`📁 File "${filename}" has been downloaded and is ready for VS Code!\n\n🔧 Next steps:\n\n1. Save the downloaded file to:\n   ${filePath}\n\n2. Open in VS Code:\n   code "${filePath}"\n\n3. After editing, use "Re-import from VS Code" in the editor to bring your changes back!`)
+  }
+
+  const openInVSCodeEditor = async () => {
+    if (!urdfContent) {
+      alert('❌ No content to edit. Please select a template or import a file first.')
+      return
+    }
+
+    try {
+      const workspacePath = `c:\\Users\\Ritu\\robotics-workflow\\${mechanicalWorkspacePath}`
+      const filePath = `${workspacePath}\\${urdfFileName}`
+      
+      console.log(`Opening in VS Code Editor: ${filePath}`)
+      
+      // Check if we're in Electron environment with our custom APIs
+      const isElectron = typeof window !== 'undefined' && (window as any).electronAPI
+      
+      if (isElectron) {
+        try {
+          // Write current content to file
+          const writeResult = (window as any).electronAPI.writeFile(filePath, urdfContent)
+          
+          if (writeResult.success) {
+            // Open in VS Code
+            const vscodeResult = await (window as any).electronAPI.openInVSCode(filePath)
+            
+            if (vscodeResult.success) {
+              setCurrentEditingFile(urdfFileName)
+              setIsFileBeingEdited(true)
+              setIsVSCodeOpen(true)
+              setLastModifiedTime(new Date())
+              
+              // Start watching for file changes and VS Code close
+              startVSCodeWatcher(filePath)
+              
+              alert(`� VS Code opened with "${urdfFileName}"!\n\n✏️ Edit the file in VS Code. When you close VS Code, changes will be automatically saved back to the editor.\n\n📁 File location: ${filePath}`)
+              
+            } else {
+              alert(`✅ File saved: ${filePath}\n\n❌ VS Code opening failed: ${vscodeResult.error}\n\n🔧 Please manually open VS Code: code "${filePath}"`)
+            }
+          } else {
+            throw new Error(`File write failed: ${writeResult.error}`)
+          }
+          
+        } catch (electronError) {
+          console.error('Electron API failed:', electronError)
+          fallbackVSCodeOpen()
+        }
+      } else {
+        fallbackVSCodeOpen()
+      }
+      
+    } catch (error) {
+      console.error('Error opening VS Code editor:', error)
+      alert('❌ Error opening VS Code editor. Please check console for details.')
+    }
+  }
+
+  const fallbackVSCodeOpen = () => {
+    // Browser fallback - download file and show instructions
+    const blob = new Blob([urdfContent], { type: 'text/xml' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = urdfFileName
+    a.style.display = 'none'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
+    
+    alert(`📁 File "${urdfFileName}" downloaded for VS Code editing!\n\n🔧 Manual steps:\n1. Save to: c:\\Users\\Ritu\\robotics-workflow\\mechanical_design\\${urdfFileName}\n2. Open: code "c:\\Users\\Ritu\\robotics-workflow\\mechanical_design\\${urdfFileName}"\n3. After editing, use "Re-import from VS Code" button`)
+  }
+
+  const startVSCodeWatcher = (filePath: string) => {
+    // Clear any existing watcher
+    if (vscodeWatcher) {
+      clearInterval(vscodeWatcher)
+    }
+
+    // Check for file changes every 2 seconds
+    const watcher = setInterval(async () => {
+      const isElectron = typeof window !== 'undefined' && (window as any).electronAPI
+      
+      if (isElectron) {
+        try {
+          const readResult = (window as any).electronAPI.readFile(filePath)
+          
+          if (readResult.success) {
+            // Check if content has changed
+            if (readResult.content !== urdfContent) {
+              console.log('File content changed, updating editor...')
+              
+              // Update the editor with new content
+              setUrdfContent(readResult.content)
+              
+              // Validate the updated content
+              const validation = validateUrdf(readResult.content)
+              setIsUrdfValid(validation.isValid)
+              setUrdfValidationErrors(validation.errors)
+              
+              setLastModifiedTime(new Date())
+              
+              // Show a subtle notification (could be replaced with a toast)
+              console.log(`📝 File updated: ${readResult.content.length} characters, Valid: ${validation.isValid}`)
+            }
+          }
+        } catch (error) {
+          console.error('File watching error:', error)
+        }
+      }
+    }, 2000) // Check every 2 seconds
+
+    setVscodeWatcher(watcher)
+    
+    // Auto-stop watching after 30 minutes to prevent memory leaks
+    setTimeout(() => {
+      if (watcher) {
+        clearInterval(watcher)
+        setVscodeWatcher(null)
+        setIsVSCodeOpen(false)
+        console.log('VS Code file watching stopped after 30 minutes')
+      }
+    }, 30 * 60 * 1000)
+  }
+
+  const stopVSCodeWatcher = () => {
+    if (vscodeWatcher) {
+      clearInterval(vscodeWatcher)
+      setVscodeWatcher(null)
+    }
+    setIsVSCodeOpen(false)
+    setIsFileBeingEdited(false)
+  }
+
+  const handleUrdfContentChange = (content: string) => {
+    setUrdfContent(content)
+    
+    // Real-time validation
+    const validation = validateUrdf(content)
+    setIsUrdfValid(validation.isValid)
+    setUrdfValidationErrors(validation.errors)
+  }
+
+  const handleFileImport = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0]
+    if (file) {
+      const reader = new FileReader()
+      reader.onload = async (e) => {
+        const content = e.target?.result as string
+        setUrdfContent(content)
+        setUrdfFileName(file.name)
+        setSelectedUrdfTemplate("imported")
+        
+        const validation = validateUrdf(content)
+        setIsUrdfValid(validation.isValid)
+        setUrdfValidationErrors(validation.errors)
+
+        // Add imported file to mechanical files list
+        const importedFile = {
+          name: file.name,
+          type: "URDF/XML (Imported)",
+          createdAt: new Date().toLocaleString(),
+          size: `${Math.round(file.size / 1024)}KB`
+        }
+        
+        setMechanicalFiles(prev => {
+          // Check if file already exists
+          const exists = prev.some(f => f.name === file.name)
+          if (exists) {
+            // Update existing file
+            return prev.map(f => f.name === file.name ? importedFile : f)
+          } else {
+            // Add new file
+            return [...prev, importedFile]
+          }
+        })
+
+        // Show success message
+        alert(`✅ Successfully imported "${file.name}"!\n\n📁 File is now available in the Mechanical Design workspace.`)
+
+        // Automatically open imported file in VS Code if enabled
+        if (openWithVSCode) {
+          await createFileAndOpenInVSCode(content, file.name)
+        }
+      }
+      reader.readAsText(file)
+    }
+  }
+
+  const saveToMechanicalWorkspace = async () => {
+    try {
+      // Download the URDF file for manual workspace addition
+      downloadUrdf()
+      
+      // Add file to mechanical files list
+      const newFile = {
+        name: urdfFileName,
+        type: "URDF/XML",
+        createdAt: new Date().toLocaleString(),
+        size: `${Math.round(urdfContent.length / 1024)}KB`
+      }
+      
+      setMechanicalFiles(prev => [...prev, newFile])
+      
+      // Show success message
+      alert(`🎉 URDF file "${urdfFileName}" has been saved to the mechanical design workspace!\n\n✅ Mechanical Design step marked as completed\n📋 File is now available for use in later pipeline stages`)
+      
+      // Reset editing state
+      setCurrentEditingFile(null)
+      setIsFileBeingEdited(false)
+      
+      // Close the editor modal
+      setShowUrdfEditor(false)
+      
+    } catch (error) {
+      console.error('Error saving to workspace:', error)
+      alert('Error saving file to workspace. Please check console for details.')
+    }
+  }
+
+  const reimportFromVSCode = async () => {
+    if (!currentEditingFile) {
+      alert('❌ No file is currently being edited in VS Code. Please select a template or import a file first.')
+      return
+    }
+
+    try {
+      const workspacePath = `c:\\Users\\Ritu\\robotics-workflow\\${mechanicalWorkspacePath}`
+      const filePath = `${workspacePath}\\${currentEditingFile}`
+      
+      // Check if we're in Electron environment with our custom APIs
+      const isElectron = typeof window !== 'undefined' && (window as any).electronAPI
+      
+      if (isElectron) {
+        try {
+          console.log('Using Electron APIs to re-import file...')
+          
+          const readResult = (window as any).electronAPI.readFile(filePath)
+          
+          if (readResult.success) {
+            // Update the editor with the new content
+            setUrdfContent(readResult.content)
+            
+            // Validate the updated content
+            const validation = validateUrdf(readResult.content)
+            setIsUrdfValid(validation.isValid)
+            setUrdfValidationErrors(validation.errors)
+            
+            setLastModifiedTime(new Date())
+            
+            alert(`✅ Successfully re-imported "${currentEditingFile}" from VS Code!\n\n📝 Content updated in the editor with ${readResult.content.length} characters.\n🔍 Validation: ${validation.isValid ? 'Valid URDF' : 'Issues found - check validation panel'}`)
+            
+          } else {
+            alert(`❌ File not found or read error: ${readResult.error}\n\n📁 Expected location: ${filePath}\n\n🔧 Please ensure the file exists in the mechanical_design folder.`)
+          }
+          
+        } catch (electronError) {
+          console.error('Electron API error:', electronError)
+          alert(`❌ Error reading file with Electron APIs.\n\n📂 Please manually select the updated "${currentEditingFile}" file.\n\nClick "Import URDF" and choose the edited file.`)
+        }
+      } else {
+        // In browser environment, ask user to manually select the updated file
+        alert(`📂 Browser environment detected.\n\nPlease manually select the updated "${currentEditingFile}" file from your mechanical_design folder.\n\nClick "Import URDF" and choose the edited file.`)
+      }
+      
+    } catch (error) {
+      console.error('Error re-importing from VS Code:', error)
+      alert('❌ Error re-importing file. Please check console for details.')
     }
   }
 
@@ -704,7 +1544,7 @@ export default function RoboticsWorkflow() {
       const assistantMessage: ChatMessage = {
         id: (Date.now() + 1).toString(),
         type: "assistant",
-        content: generateAIResponse(currentMessage, uploadedImage, selectedStep),
+        content: generateAIResponse(currentMessage, !!uploadedImage, selectedStep),
         timestamp: new Date().toLocaleTimeString(),
         codeSnippet:
           currentMessage.toLowerCase().includes("code") || currentMessage.toLowerCase().includes("generate")
@@ -825,16 +1665,17 @@ def optimize_${stepId.replace("-", "_")}():
               </TabsList>
 
               <TabsContent value="workflow" className="space-y-6">
-                {/* Linear Flow Steps (CAD → Mechanical → Control) */}
+                {/* Enhanced Linear Flow Steps (Mechanical → Control → Simulation → Hardware → Export) */}
                 <div className="flex items-center justify-center space-x-4">
-                  {workflowSteps.slice(0, 3).map((step, index) => (
+                  {workflowSteps.map((step, index) => (
                     <React.Fragment key={step.id}>
                       <Card
-                        className={`cursor-pointer transition-all duration-200 hover:shadow-lg w-48 ${
+                        className={`cursor-pointer transition-all duration-200 hover:shadow-lg w-64 ${
                           selectedStep === step.id ? "ring-2 ring-blue-500 shadow-lg" : ""
                         } ${step.id === "control" ? "ring-2 ring-orange-300" : ""}`}
                         onClick={() => handleCardClick(step.id)}
-                        title="Click to view details"
+                        onDoubleClick={(e) => handleCardDoubleClick(step.id, e)}
+                        title="Click to view details • Double-click for advanced features"
                       >
                         <CardContent className="p-6 text-center">
                           <div className="flex flex-col items-center space-y-3">
@@ -855,7 +1696,25 @@ def optimize_${stepId.replace("-", "_")}():
                             </div>
                             {step.id === "control" && (
                               <div className="text-xs text-orange-600 font-medium">
-                                Branches to Hardware & Simulation
+                                Feeds into Simulation
+                              </div>
+                            )}
+                            {step.id === "mechanical" && (
+                              <div className="text-xs text-blue-600 font-medium">
+                                Click for URDF/XML Editor
+                              </div>
+                            )}
+                            {step.features && step.features.length > 0 && (
+                              <div className="text-xs text-gray-600 bg-gray-50 p-2 rounded max-w-full">
+                                <div className="font-medium mb-1">Key Features:</div>
+                                <div className="text-left">
+                                  {step.features.slice(0, 2).map((feature, idx) => (
+                                    <div key={idx} className="truncate">• {feature}</div>
+                                  ))}
+                                  {step.features.length > 2 && (
+                                    <div className="text-blue-600">+{step.features.length - 2} more...</div>
+                                  )}
+                                </div>
                               </div>
                             )}
                           </div>
@@ -863,7 +1722,7 @@ def optimize_${stepId.replace("-", "_")}():
                       </Card>
 
                       {/* Arrow between cards */}
-                      {index < 2 && (
+                      {index < workflowSteps.length - 1 && (
                         <div className="flex items-center">
                           <div className="w-8 h-0.5 bg-gradient-to-r from-blue-400 to-purple-500"></div>
                           <ArrowRight className="h-6 w-6 text-purple-500 -ml-1" />
@@ -873,405 +1732,35 @@ def optimize_${stepId.replace("-", "_")}():
                   ))}
                 </div>
 
-                {/* Branching Section with Connecting Nodes */}
-                <div className="relative">
-                  {/* Control System to Branch Connection */}
-                  <div className="flex justify-center mb-6">
-                    <div className="flex flex-col items-center space-y-4">
-                      {/* Connection Node from Control System */}
-                      <div className="w-4 h-4 bg-orange-500 rounded-full border-2 border-orange-600"></div>
-                      <div className="w-0.5 h-8 bg-orange-400"></div>
-
-                      {/* Branch Split Node */}
-                      <div className="relative">
-                        <div className="w-6 h-6 bg-orange-500 rounded-full border-2 border-orange-600 flex items-center justify-center">
-                          <Split className="h-3 w-3 text-white" />
-                        </div>
-
-                        {/* Horizontal connecting lines to both paths */}
-                        <div className="absolute top-1/2 -left-32 w-32 h-0.5 bg-orange-400 transform -translate-y-1/2"></div>
-                        <div className="absolute top-1/2 -right-32 w-32 h-0.5 bg-orange-400 transform -translate-y-1/2"></div>
-
-                        {/* Connection nodes at the ends */}
-                        <div className="absolute top-1/2 -left-32 w-3 h-3 bg-blue-500 rounded-full border border-blue-600 transform -translate-y-1/2 -translate-x-1"></div>
-                        <div className="absolute top-1/2 -right-32 w-3 h-3 bg-purple-500 rounded-full border border-purple-600 transform -translate-y-1/2 translate-x-1"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Branch Labels */}
-                  <div className="flex justify-center mb-6">
-                    <div className="grid grid-cols-2 gap-32 text-center">
-                      <div className="bg-blue-100 border border-blue-300 rounded-lg p-3">
-                        <div className="flex items-center justify-center space-x-2">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full"></div>
-                          <span className="font-medium text-blue-900">Hardware Path</span>
-                        </div>
-                        <p className="text-sm text-blue-700 mt-1">Physical deployment & data collection</p>
-                      </div>
-                      <div className="bg-purple-100 border border-purple-300 rounded-lg p-3">
-                        <div className="flex items-center justify-center space-x-2">
-                          <div className="w-3 h-3 bg-purple-500 rounded-full"></div>
-                          <span className="font-medium text-purple-900">Direct Simulation</span>
-                        </div>
-                        <p className="text-sm text-purple-700 mt-1">Virtual testing & validation</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Branched Flow with Connecting Nodes */}
-                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    {/* Left Branch: Hardware → Data → Simulation */}
-                    <div className="space-y-6">
-                      <div className="space-y-4">
-                        {/* Connection Node to Hardware */}
-                        <div className="flex justify-center">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full border border-blue-600"></div>
-                        </div>
-                        <div className="flex justify-center">
-                          <div className="w-0.5 h-4 bg-blue-400"></div>
-                        </div>
-
-                        {/* Hardware Card */}
-                        <div className="flex justify-center">
-                          <Card
-                            className={`cursor-pointer transition-all duration-200 hover:shadow-lg w-64 ${
-                              selectedStep === "hardware" ? "ring-2 ring-blue-500 shadow-lg" : ""
-                            }`}
-                            onClick={() => handleCardClick("hardware")}
-                            title="Click to view details"
-                          >
-                            <CardContent className="p-6 text-center">
-                              <div className="flex flex-col items-center space-y-3">
-                                <HardDrive className="h-6 w-6" />
-                                <CardTitle className="text-lg">Hardware Deployment</CardTitle>
-                                <div className="flex items-center space-x-2">
-                                  {getStatusIcon(workflowSteps.find((s) => s.id === "hardware")?.status || "pending")}
-                                  <Badge
-                                    className={getStatusColor(
-                                      workflowSteps.find((s) => s.id === "hardware")?.status || "pending",
-                                    )}
-                                  >
-                                    PENDING
-                                  </Badge>
-                                </div>
-                                <div className="w-full">
-                                  <div className="flex justify-between text-sm mb-1">
-                                    <span>Progress:</span>
-                                    <span>0%</span>
-                                  </div>
-                                  <Progress value={0} className="h-2" />
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </div>
-
-                        {/* Connection Node between Hardware and Data */}
-                        <div className="flex justify-center">
-                          <div className="w-0.5 h-4 bg-blue-400"></div>
-                        </div>
-                        <div className="flex justify-center">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full border border-blue-600"></div>
-                        </div>
-                        <div className="flex justify-center">
-                          <div className="w-0.5 h-4 bg-blue-400"></div>
-                        </div>
-
-                        {/* Data Collection Card */}
-                        <div className="flex justify-center">
-                          <Card
-                            className={`cursor-pointer transition-all duration-200 hover:shadow-lg w-64 ${
-                              selectedStep === "data" ? "ring-2 ring-blue-500 shadow-lg" : ""
-                            }`}
-                            onClick={() => handleCardClick("data")}
-                            title="Click to view details"
-                          >
-                            <CardContent className="p-6 text-center">
-                              <div className="flex flex-col items-center space-y-3">
-                                <Database className="h-6 w-6" />
-                                <CardTitle className="text-lg">Data Collection</CardTitle>
-                                <div className="flex items-center space-x-2">
-                                  {getStatusIcon(workflowSteps.find((s) => s.id === "data")?.status || "pending")}
-                                  <Badge
-                                    className={getStatusColor(
-                                      workflowSteps.find((s) => s.id === "data")?.status || "pending",
-                                    )}
-                                  >
-                                    PENDING
-                                  </Badge>
-                                </div>
-                                <div className="w-full">
-                                  <div className="flex justify-between text-sm mb-1">
-                                    <span>Progress:</span>
-                                    <span>0%</span>
-                                  </div>
-                                  <Progress value={0} className="h-2" />
-                                </div>
-                              </div>
-                            </CardContent>
-                          </Card>
-                        </div>
-
-                        {/* Connection Node from Data to Simulation */}
-                        <div className="flex justify-center">
-                          <div className="w-0.5 h-4 bg-blue-400"></div>
-                        </div>
-                        <div className="flex justify-center">
-                          <div className="w-3 h-3 bg-blue-500 rounded-full border border-blue-600"></div>
-                        </div>
-                      </div>
-                    </div>
-
-                    {/* Right Branch: Direct Simulation */}
-                    <div className="space-y-6">
-                      <div className="flex justify-center">
-                        {/* Connection Node to Direct Simulation */}
-                        <div className="w-3 h-3 bg-purple-500 rounded-full border border-purple-600"></div>
-                      </div>
-                      <div className="flex justify-center">
-                        <div className="w-0.5 h-16 bg-purple-400"></div>
-                      </div>
-                      <div className="flex justify-center">
-                        <div className="text-sm text-gray-600 bg-purple-50 p-4 rounded border-2 border-dashed border-purple-300 max-w-xs text-center">
-                          <div className="flex items-center justify-center space-x-2 mb-2">
-                            <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
-                            <span className="font-medium">Direct Path</span>
-                          </div>
-                          Control System feeds directly into Simulation for rapid prototyping and algorithm testing
-                        </div>
-                      </div>
-                      <div className="flex justify-center">
-                        <div className="w-0.5 h-16 bg-purple-400"></div>
-                      </div>
-                      <div className="flex justify-center">
-                        {/* Connection Node from Direct Path to Simulation */}
-                        <div className="w-3 h-3 bg-purple-500 rounded-full border border-purple-600"></div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Convergence to Simulation */}
-                  <div className="mt-8">
-                    <div className="flex justify-center mb-4">
-                      {/* Convergence Node */}
-                      <div className="relative">
-                        <div className="w-6 h-6 bg-green-500 rounded-full border-2 border-green-600 flex items-center justify-center">
-                          <Play className="h-3 w-3 text-white" />
-                        </div>
-
-                        {/* Connecting lines from both paths */}
-                        <div className="absolute top-1/2 -left-32 w-32 h-0.5 bg-blue-400 transform -translate-y-1/2"></div>
-                        <div className="absolute top-1/2 -right-32 w-32 h-0.5 bg-purple-400 transform -translate-y-1/2"></div>
-
-                        {/* Connection nodes from both paths */}
-                        <div className="absolute top-1/2 -left-32 w-3 h-3 bg-blue-500 rounded-full border border-blue-600 transform -translate-y-1/2 -translate-x-1"></div>
-                        <div className="absolute top-1/2 -right-32 w-3 h-3 bg-purple-500 rounded-full border border-purple-600 transform -translate-y-1/2 translate-x-1"></div>
-                      </div>
-                    </div>
-
-                    <div className="flex justify-center mb-4">
-                      <div className="bg-green-100 border border-green-300 rounded-lg p-3">
-                        <div className="flex items-center justify-center space-x-2">
-                          <div className="w-3 h-3 bg-green-500 rounded-full"></div>
-                          <span className="font-medium text-green-900">Paths Converge</span>
-                        </div>
-                        <p className="text-sm text-green-700 mt-1">
-                          Both hardware and direct paths feed into simulation
-                        </p>
-                      </div>
-                    </div>
-
-                    {/* Connection line down to Simulation */}
-                    <div className="flex justify-center">
-                      <div className="w-0.5 h-6 bg-green-400"></div>
-                    </div>
-
-                    {/* Simulation Card */}
-                    <div className="flex justify-center">
-                      <Card
-                        className={`cursor-pointer transition-all duration-200 hover:shadow-lg w-64 ${
-                          selectedStep === "simulation" ? "ring-2 ring-blue-500 shadow-lg" : ""
-                        } hover:ring-2 hover:ring-purple-300`}
-                        onClick={() => handleCardClick("simulation")}
-                        onDoubleClick={(e) => handleCardDoubleClick("simulation", e)}
-                        title="Click to view details • Double-click for simulation dashboard"
-                      >
-                        <CardContent className="p-6 text-center">
-                          <div className="flex flex-col items-center space-y-3">
-                            <Play className="h-6 w-6" />
-                            <CardTitle className="text-lg">Simulation</CardTitle>
-                            <div className="flex items-center space-x-2">
-                              {getStatusIcon(workflowSteps.find((s) => s.id === "simulation")?.status || "pending")}
-                              <Badge
-                                className={getStatusColor(
-                                  workflowSteps.find((s) => s.id === "simulation")?.status || "pending",
-                                )}
-                              >
-                                IN-PROGRESS
-                              </Badge>
-                            </div>
-                            <div className="w-full">
-                              <div className="flex justify-between text-sm mb-1">
-                                <span>Progress:</span>
-                                <span>60%</span>
-                              </div>
-                              <Progress value={60} className="h-2" />
-                            </div>
-                            <div className="text-xs text-purple-600 font-medium">Double-click for details</div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-
-                  {/* Final Export Step with Connection Node */}
-                  <div className="mt-8">
-                    <div className="flex justify-center mb-4">
-                      <div className="w-0.5 h-6 bg-green-400"></div>
-                    </div>
-                    <div className="flex justify-center mb-4">
-                      <div className="w-3 h-3 bg-green-500 rounded-full border border-green-600"></div>
-                    </div>
-                    <div className="flex justify-center mb-4">
-                      <div className="w-0.5 h-6 bg-red-400"></div>
-                    </div>
-
-                    {/* MODIFIED: Export & Reports Card - Double-click opens Export Section */}
-                    <div className="flex justify-center">
-                      <Card
-                        className={`cursor-pointer transition-all duration-200 hover:shadow-lg w-64 ${
-                          selectedStep === "export" ? "ring-2 ring-blue-500 shadow-lg" : ""
-                        } hover:ring-2 hover:ring-green-300`}
-                        onClick={() => handleCardClick("export")}
-                        onDoubleClick={(e) => handleCardDoubleClick("export", e)}
-                        title="Click to view details • Double-click for Export & Reports section"
-                      >
-                        <CardContent className="p-6 text-center">
-                          <div className="flex flex-col items-center space-y-3">
-                            <div className="flex items-center space-x-2">
-                              <FileText className="h-6 w-6" />
-                              <Button
-                                size="sm"
-                                variant="ghost"
-                                className="h-6 w-6 p-0 hover:bg-green-100"
-                                onClick={(e) => {
-                                  e.stopPropagation()
-                                  downloadComprehensiveReport()
-                                }}
-                                title="Download Report Summary"
-                              >
-                                <Download className="h-3 w-3 text-green-600" />
-                              </Button>
-                            </div>
-                            <CardTitle className="text-lg">Export & Reports</CardTitle>
-                            <div className="flex items-center space-x-2">
-                              {getStatusIcon(workflowSteps.find((s) => s.id === "export")?.status || "pending")}
-                              <Badge
-                                className={getStatusColor(
-                                  workflowSteps.find((s) => s.id === "export")?.status || "pending",
-                                )}
-                              >
-                                PENDING
-                              </Badge>
-                            </div>
-                            <div className="w-full">
-                              <div className="flex justify-between text-sm mb-1">
-                                <span>Progress:</span>
-                                <span>0%</span>
-                              </div>
-                              <Progress value={0} className="h-2" />
-                            </div>
-                            <div className="text-xs text-green-600 font-medium">Double-click for Export section</div>
-                          </div>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Flow Summary */}
-                <Card className="mt-6 bg-gradient-to-r from-blue-50 to-purple-50 border-blue-200">
+                {/* GenAI Integration Banner */}
+                <Card className="mt-6 bg-gradient-to-r from-purple-50 to-blue-50 border-purple-200">
                   <CardHeader>
                     <CardTitle className="flex items-center space-x-2">
-                      <GitBranch className="h-5 w-5 text-blue-600" />
-                      <span>Complete Development Flow (PDF Accurate)</span>
+                      <Brain className="h-5 w-5 text-purple-600" />
+                      <span>GenAI Engine Integration (LLM Assistance)</span>
                     </CardTitle>
                     <CardDescription>
-                      Branching architecture with parallel hardware and simulation paths
+                      AI assistance spans across all modules with specialized robotics knowledge
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div className="space-y-4">
-                      {/* Linear Path */}
-                      <div className="flex items-center justify-center text-sm">
-                        <div className="flex items-center space-x-2">
-                          <Box className="h-6 w-6 text-blue-600" />
-                          <span>CAD</span>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400 mx-2" />
-                        <div className="flex items-center space-x-2">
-                          <Cog className="h-6 w-6 text-green-600" />
-                          <span>Mechanical</span>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400 mx-2" />
-                        <div className="flex items-center space-x-2">
-                          <Settings className="h-6 w-6 text-orange-600" />
-                          <span>Control</span>
-                        </div>
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-sm">
+                      <div className="bg-blue-50 p-3 rounded border">
+                        <div className="font-medium text-blue-900 mb-2">Mechanical Design:</div>
+                        <div>CAD assistance, URDF generation, design optimization</div>
                       </div>
-
-                      {/* Branching Paths */}
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                        <div className="bg-blue-50 p-3 rounded border">
-                          <div className="font-medium text-blue-900 mb-2">Hardware Path:</div>
-                          <div className="flex items-center space-x-1">
-                            <HardDrive className="h-4 w-4" />
-                            <span>Hardware</span>
-                            <ArrowRight className="h-3 w-3" />
-                            <Database className="h-4 w-4" />
-                            <span>Data</span>
-                            <ArrowRight className="h-3 w-3" />
-                            <Play className="h-4 w-4" />
-                            <span>Simulation</span>
-                          </div>
-                        </div>
-                        <div className="bg-purple-50 p-3 rounded border">
-                          <div className="font-medium text-purple-900 mb-2">Direct Path:</div>
-                          <div className="flex items-center space-x-1">
-                            <Settings className="h-4 w-4" />
-                            <span>Control</span>
-                            <ArrowRight className="h-3 w-3" />
-                            <Play className="h-4 w-4" />
-                            <span>Simulation</span>
-                          </div>
-                        </div>
+                      <div className="bg-orange-50 p-3 rounded border">
+                        <div className="font-medium text-orange-900 mb-2">Control System:</div>
+                        <div>Code generation, controller tuning, GUI building</div>
                       </div>
-
-                      {/* Final Step */}
-                      <div className="flex items-center justify-center text-sm">
-                        <div className="flex items-center space-x-2">
-                          <Play className="h-6 w-6 text-purple-600" />
-                          <span>Simulation</span>
-                        </div>
-                        <ArrowRight className="h-4 w-4 text-gray-400 mx-2" />
-                        <div className="flex items-center space-x-2">
-                          <FileText className="h-6 w-6 text-red-600" />
-                          <span>Export & Reports</span>
-                        </div>
+                      <div className="bg-green-50 p-3 rounded border">
+                        <div className="font-medium text-green-900 mb-2">Simulation:</div>
+                        <div>Environment setup, task definition, report generation</div>
                       </div>
-                    </div>
-
-                    {/* LLM Integration Note */}
-                    <div className="mt-4 p-3 bg-purple-50 rounded-lg border border-purple-200">
-                      <div className="flex items-center space-x-2">
-                        <Brain className="h-5 w-5 text-purple-600" />
-                        <span className="font-medium text-purple-900">LLM Integration</span>
+                      <div className="bg-red-50 p-3 rounded border">
+                        <div className="font-medium text-red-900 mb-2">Export & Reports:</div>
+                        <div>Documentation, data analysis, automated reporting</div>
                       </div>
-                      <p className="text-sm text-purple-700 mt-1">
-                        The LLM Assistant (side panel) can interact with all workflow steps and integrates with GitHub,
-                        Bitbucket, and JIRA for comprehensive project management.
-                      </p>
                     </div>
                   </CardContent>
                 </Card>
@@ -1335,6 +1824,75 @@ def optimize_${stepId.replace("-", "_")}():
                     </CardContent>
                   </Card>
                 )}
+
+                {/* Output Section */}
+                <Card className="mt-8">
+                  <CardHeader>
+                    <CardTitle className="flex items-center space-x-2">
+                      <Download className="h-5 w-5 text-blue-600" />
+                      <span>Output Files & Reports</span>
+                    </CardTitle>
+                    <CardDescription>
+                      Generated files and reports from each module in the robotics pipeline
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                      {outputCards.map((outputCard) => (
+                        <Card 
+                          key={outputCard.id} 
+                          className="cursor-pointer transition-all duration-200 hover:shadow-lg hover:scale-105"
+                          onClick={() => handleOutputCardClick(outputCard)}
+                        >
+                          <CardContent className="p-4">
+                            <div className="flex flex-col space-y-3">
+                              <div className="flex items-center justify-between">
+                                <div className="flex items-center space-x-2">
+                                  {outputCard.icon}
+                                  <span className="font-medium text-sm">{outputCard.title}</span>
+                                </div>
+                                <div className="flex items-center space-x-1">
+                                  {getOutputStatusIcon(outputCard.status)}
+                                  <Badge variant="secondary" className={`text-xs ${getOutputStatusColor(outputCard.status)}`}>
+                                    {outputCard.status.toUpperCase()}
+                                  </Badge>
+                                </div>
+                              </div>
+                              
+                              <div className="text-xs text-gray-600">
+                                <div className="font-medium text-blue-600 mb-1">Source: {outputCard.sourceModule}</div>
+                                <div className="mb-2">{outputCard.description}</div>
+                                
+                                {outputCard.status === "available" && (
+                                  <div className="space-y-1">
+                                    <div className="flex justify-between">
+                                      <span>Files:</span>
+                                      <span className="text-green-600">{outputCard.files.length}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span>Size:</span>
+                                      <span className="text-green-600">{outputCard.fileSize}</span>
+                                    </div>
+                                    <div className="flex justify-between">
+                                      <span>Generated:</span>
+                                      <span className="text-gray-500">{outputCard.lastGenerated?.split(' ')[1]}</span>
+                                    </div>
+                                  </div>
+                                )}
+                                
+                                {outputCard.status === "pending" && (
+                                  <div className="text-gray-500 text-center py-2">
+                                    Waiting for {outputCard.sourceModule} completion
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                          </CardContent>
+                        </Card>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
               </TabsContent>
 
               <TabsContent value="integrations" className="space-y-6">
@@ -1474,16 +2032,32 @@ def optimize_${stepId.replace("-", "_")}():
 
         {/* Card Details Modal */}
         <Dialog open={showCardDetails} onOpenChange={setShowCardDetails}>
-          <DialogContent className="max-w-2xl">
+          <DialogContent className="max-w-3xl max-h-[80vh] overflow-y-auto">
             <DialogHeader>
-              <DialogTitle className="flex items-center space-x-2">
-                {selectedCardDetails?.icon}
-                <span>{selectedCardDetails?.title}</span>
+              <DialogTitle className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  {selectedCardDetails?.icon}
+                  <span>{selectedCardDetails?.title}</span>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowCardDetails(false)}
+                  className="text-gray-500 hover:text-gray-700"
+                >
+                  <X className="h-4 w-4" />
+                  Close
+                </Button>
               </DialogTitle>
-              <DialogDescription>{selectedCardDetails?.description}</DialogDescription>
+              <DialogDescription className="flex items-center justify-between">
+                <span>{selectedCardDetails?.description}</span>
+                <span className="text-xs text-gray-400 bg-gray-100 px-2 py-1 rounded">
+                  Press ESC to close
+                </span>
+              </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-6">
+            <div className="space-y-6 pr-2">
               {/* Status and Progress */}
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
@@ -1512,22 +2086,38 @@ def optimize_${stepId.replace("-", "_")}():
                     </Badge>
                   ))}
                 </div>
-                {/* ONLY show View Comprehensive Report button for Export & Reports card */}
-                {selectedCardDetails?.id === "export" && (
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full bg-transparent"
-                    onClick={() => {
-                      setShowReportsModal(true)
-                      setShowCardDetails(false)
-                    }}
-                  >
-                    <FileBarChart className="h-4 w-4 mr-2" />
-                    View Comprehensive Report
-                  </Button>
-                )}
               </div>
+
+              {/* Features */}
+              {selectedCardDetails?.features && selectedCardDetails.features.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-3">Key Features:</h4>
+                  <div className="space-y-2 mb-3">
+                    {selectedCardDetails.features.map((feature, index) => (
+                      <div key={index} className="flex items-start space-x-2 text-sm">
+                        <div className="w-2 h-2 bg-blue-500 rounded-full mt-2 flex-shrink-0"></div>
+                        <span>{feature}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* ONLY show View Comprehensive Report button for Export & Reports card */}
+              {selectedCardDetails?.id === "export" && (
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="w-full bg-transparent"
+                  onClick={() => {
+                    setShowReportsModal(true)
+                    setShowCardDetails(false)
+                  }}
+                >
+                  <FileBarChart className="h-4 w-4 mr-2" />
+                  View Comprehensive Report
+                </Button>
+              )}
 
               {/* Integrations */}
               {selectedCardDetails?.integrations && (
@@ -1544,20 +2134,106 @@ def optimize_${stepId.replace("-", "_")}():
                 </div>
               )}
 
+              {/* Show created/imported files for Mechanical Design */}
+              {selectedCardDetails?.id === "mechanical" && mechanicalFiles.length > 0 && (
+                <div className="space-y-3 pt-4 border-t">
+                  <h4 className="font-medium text-sm">Created/Imported Files ({mechanicalFiles.length})</h4>
+                  <div className="space-y-2">
+                    {mechanicalFiles.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between p-2 bg-green-50 border border-green-200 rounded-lg">
+                        <div className="flex items-center space-x-2">
+                          <FileText className="h-4 w-4 text-green-600" />
+                          <div>
+                            <div className="text-sm font-medium text-gray-900">{file.name}</div>
+                            <div className="text-xs text-gray-500">{file.type} • {file.createdAt}</div>
+                          </div>
+                        </div>
+                        <div className="flex items-center space-x-2">
+                          <span className="text-xs text-gray-500">{file.size}</span>
+                          <Badge variant="secondary" className="bg-green-100 text-green-800">
+                            ✓ Ready
+                          </Badge>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedCardDetails?.id === "mechanical" && mechanicalFiles.length === 0 && (
+                <div className="space-y-3 pt-4 border-t">
+                  <div className="text-center p-6 bg-gray-50 border-2 border-dashed border-gray-300 rounded-lg">
+                    <FileText className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                    <h4 className="text-sm font-medium text-gray-600 mb-1">No URDF/XML Files Yet</h4>
+                    <p className="text-xs text-gray-500 mb-4">Create or import URDF files to get started with mechanical design.</p>
+                    <Button
+                      size="sm"
+                      className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                      onClick={() => {
+                        setShowUrdfEditor(true)
+                        setShowCardDetails(false)
+                      }}
+                    >
+                      <Plus className="h-4 w-4 mr-1" />
+                      Create URDF File
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               {/* Action Buttons */}
-              <div className="flex space-x-3 pt-4">
-                <Button className="flex-1">Configure Step</Button>
-                <Button
-                  variant="outline"
-                  className="flex-1 bg-transparent"
-                  onClick={() => {
-                    setShowLLMPanel(true)
-                    setShowCardDetails(false)
-                  }}
-                >
-                  <Brain className="h-4 w-4 mr-2" />
-                  Get AI Assistance
-                </Button>
+              <div className="space-y-3 pt-4">
+                {/* Standard action buttons */}
+                <div className="flex space-x-3">
+                  <Button 
+                    className="flex-1"
+                    onClick={() => {
+                      // Close modal and show configuration options
+                      setShowCardDetails(false)
+                      alert(`🔧 Configuration for ${selectedCardDetails?.title}\n\nThis will open the configuration panel for this workflow step.`)
+                    }}
+                  >
+                    <Settings className="h-4 w-4 mr-2" />
+                    Configure Step
+                  </Button>
+                  <Button
+                    variant="outline"
+                    className="flex-1 bg-transparent"
+                    onClick={() => {
+                      setShowLLMPanel(true)
+                      setShowCardDetails(false)
+                    }}
+                  >
+                    <Brain className="h-4 w-4 mr-2" />
+                    Get AI Assistance
+                  </Button>
+                </div>
+
+                {/* URDF/XML Editor button - only for Mechanical Design */}
+                {selectedCardDetails?.id === "mechanical" && (
+                  <Button
+                    className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700"
+                    onClick={() => {
+                      setShowUrdfEditor(true)
+                      setShowCardDetails(false)
+                    }}
+                  >
+                    <Box className="h-4 w-4 mr-2" />
+                    Open URDF/XML Editor
+                  </Button>
+                )}
+
+                {/* Quick Access Navigation */}
+                <div className="border-t pt-4 mt-4">
+                  <Button
+                    variant="outline"
+                    className="w-full"
+                    onClick={() => setShowCardDetails(false)}
+                  >
+                    <ArrowRight className="h-4 w-4 mr-2 rotate-180" />
+                    Back to Workflow Overview
+                  </Button>
+                </div>
               </div>
             </div>
           </DialogContent>
@@ -1759,6 +2435,109 @@ def optimize_${stepId.replace("-", "_")}():
           </div>
         </div>
 
+        {/* Output Details Modal */}
+        <Dialog open={showOutputDetails} onOpenChange={setShowOutputDetails}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle className="flex items-center space-x-2">
+                {selectedOutputCard?.icon}
+                <span>{selectedOutputCard?.title}</span>
+              </DialogTitle>
+              <DialogDescription>
+                {selectedOutputCard?.description}
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="space-y-6">
+              {/* Output Info */}
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <span className="font-medium">Source Module:</span>
+                  <div className="text-blue-600 font-medium">{selectedOutputCard?.sourceModule}</div>
+                </div>
+                <div>
+                  <span className="font-medium">Output Type:</span>
+                  <div className="text-gray-700">{selectedOutputCard?.outputType}</div>
+                </div>
+                <div>
+                  <span className="font-medium">Status:</span>
+                  <div className="flex items-center space-x-2">
+                    {selectedOutputCard && getOutputStatusIcon(selectedOutputCard.status)}
+                    <Badge className={`${getOutputStatusColor(selectedOutputCard?.status || "pending")}`}>
+                      {selectedOutputCard?.status?.toUpperCase()}
+                    </Badge>
+                  </div>
+                </div>
+                {selectedOutputCard?.status === "available" && (
+                  <div>
+                    <span className="font-medium">File Size:</span>
+                    <div className="text-green-600 font-medium">{selectedOutputCard?.fileSize}</div>
+                  </div>
+                )}
+              </div>
+
+              {/* Generated Files */}
+              {selectedOutputCard?.files && selectedOutputCard.files.length > 0 && (
+                <div>
+                  <h4 className="font-medium mb-3">Generated Files:</h4>
+                  <div className="space-y-2">
+                    {selectedOutputCard.files.map((file, index) => (
+                      <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <FileText className="h-4 w-4 text-gray-600" />
+                          <span className="text-sm font-medium">{file}</span>
+                        </div>
+                        {selectedOutputCard.status === "available" && (
+                          <div className="flex space-x-2">
+                            <Button size="sm" variant="outline" className="h-8 px-3">
+                              <Eye className="h-3 w-3 mr-1" />
+                              View
+                            </Button>
+                            <Button size="sm" variant="outline" className="h-8 px-3">
+                              <Download className="h-3 w-3 mr-1" />
+                              Download
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Last Generated */}
+              {selectedOutputCard?.status === "available" && selectedOutputCard.lastGenerated && (
+                <div className="text-sm text-gray-600 border-t pt-4">
+                  <div className="flex justify-between">
+                    <span>Last Generated:</span>
+                    <span className="font-medium">{selectedOutputCard.lastGenerated}</span>
+                  </div>
+                </div>
+              )}
+
+              {/* Pending Message */}
+              {selectedOutputCard?.status === "pending" && (
+                <div className="text-center py-6 bg-gray-50 rounded-lg">
+                  <AlertCircle className="h-8 w-8 text-gray-400 mx-auto mb-2" />
+                  <div className="text-gray-600">
+                    Files will be generated once {selectedOutputCard.sourceModule} module is completed.
+                  </div>
+                </div>
+              )}
+
+              {/* Download All Button */}
+              {selectedOutputCard?.status === "available" && (
+                <div className="flex justify-end">
+                  <Button className="bg-blue-600 hover:bg-blue-700">
+                    <Download className="h-4 w-4 mr-2" />
+                    Download All Files
+                  </Button>
+                </div>
+              )}
+            </div>
+          </DialogContent>
+        </Dialog>
+
         {/* LLM Panel Toggle Button */}
         {!showLLMPanel && (
           <Button
@@ -1772,6 +2551,378 @@ def optimize_${stepId.replace("-", "_")}():
           </Button>
         )}
       </div>
+
+      {/* Output Details Modal */}
+      <Dialog open={showOutputDetails} onOpenChange={setShowOutputDetails}>
+        <DialogContent className="max-w-3xl">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              {selectedOutputCard?.icon}
+              <span>{selectedOutputCard?.title}</span>
+            </DialogTitle>
+            <DialogDescription>
+              {selectedOutputCard?.description} • Source: {selectedOutputCard?.sourceModule}
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {/* Status and Metadata */}
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">Status:</span>
+                  <div className="flex items-center space-x-2">
+                    {getOutputStatusIcon(selectedOutputCard?.status || "pending")}
+                    <Badge className={`${getOutputStatusColor(selectedOutputCard?.status || "pending")}`}>
+                      {selectedOutputCard?.status?.toUpperCase()}
+                    </Badge>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">Output Type:</span>
+                  <span className="text-gray-600">{selectedOutputCard?.outputType}</span>
+                </div>
+              </div>
+              
+              {selectedOutputCard?.status === "available" && (
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">Total Size:</span>
+                    <span className="text-green-600">{selectedOutputCard?.fileSize}</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">Generated:</span>
+                    <span className="text-gray-600">{selectedOutputCard?.lastGenerated}</span>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Files List */}
+            <div>
+              <h4 className="font-medium mb-3">Files ({selectedOutputCard?.files.length}):</h4>
+              
+              {selectedOutputCard?.status === "available" ? (
+                <div className="space-y-2">
+                  {selectedOutputCard?.files.map((file, index) => (
+                    <div key={index} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                      <div className="flex items-center space-x-3">
+                        <FileText className="h-4 w-4 text-blue-600" />
+                        <span className="font-medium">{file}</span>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Button variant="outline" size="sm">
+                          <Eye className="h-3 w-3 mr-1" />
+                          View
+                        </Button>
+                        <Button variant="outline" size="sm">
+                          <Download className="h-3 w-3 mr-1" />
+                          Download
+                        </Button>
+                      </div>
+                    </div>
+                  ))}
+                  
+                  {/* Bulk Actions */}
+                  <div className="flex justify-end space-x-2 mt-4 pt-4 border-t">
+                    <Button variant="outline">
+                      <Copy className="h-4 w-4 mr-2" />
+                      Copy File Paths
+                    </Button>
+                    <Button>
+                      <Download className="h-4 w-4 mr-2" />
+                      Download All Files
+                    </Button>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <AlertCircle className="h-12 w-12 mx-auto mb-3 text-gray-400" />
+                  <p className="text-lg font-medium mb-2">Files Not Available Yet</p>
+                  <p>Complete the <strong>{selectedOutputCard?.sourceModule}</strong> module to generate these files.</p>
+                  
+                  {selectedOutputCard?.files && (
+                    <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+                      <p className="text-sm font-medium mb-2">Expected Files:</p>
+                      <div className="space-y-1">
+                        {selectedOutputCard.files.map((file, index) => (
+                          <div key={index} className="text-sm text-gray-600">• {file}</div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* URDF/XML Editor Modal */}
+      <Dialog open={showUrdfEditor} onOpenChange={(open) => {
+        if (!open) {
+          // Cleanup when closing editor
+          stopVSCodeWatcher()
+          setCurrentEditingFile(null)
+          setIsFileBeingEdited(false)
+        }
+        setShowUrdfEditor(open)
+      }}>
+        <DialogContent className="max-w-[98vw] max-h-[90vh] overflow-hidden w-[98vw] px-6 py-4">
+          <DialogHeader>
+            <DialogTitle className="flex items-center space-x-2">
+              <FileText className="h-5 w-5 text-blue-600" />
+              <span>URDF/XML Editor</span>
+              <Badge variant={isUrdfValid ? "default" : "destructive"} className="ml-2">
+                {isUrdfValid ? "Valid" : "Invalid"}
+              </Badge>
+            </DialogTitle>
+            <DialogDescription>
+              Create new URDF files from templates or import existing ones for editing
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="flex flex-col h-[75vh]">
+            {/* Toolbar */}
+            <div className="flex flex-col space-y-4 p-4 border-b bg-gray-50 rounded-t">
+              {/* Row 1: Template Selection */}
+              <div className="flex items-center space-x-4">
+                <span className="text-sm font-medium whitespace-nowrap">Template:</span>
+                <Select value={selectedUrdfTemplate} onValueChange={loadUrdfTemplate}>
+                  <SelectTrigger className="w-48">
+                    <SelectValue placeholder="Choose template" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {urdfTemplates.map((template) => (
+                      <SelectItem key={template.id} value={template.id}>
+                        <div className="flex flex-col">
+                          <span>{template.name}</span>
+                          <span className="text-xs text-gray-500">{template.category}</span>
+                        </div>
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Row 2: VS Code Integration, File Operations and Save Actions */}
+              <div className="flex items-center justify-between gap-4">
+                {/* Left Section: VS Code Integration */}
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 p-2 border rounded bg-white">
+                    <input
+                      type="checkbox"
+                      id="vscode-checkbox"
+                      checked={openWithVSCode}
+                      onChange={(e) => setOpenWithVSCode(e.target.checked)}
+                      className="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
+                    />
+                    <label htmlFor="vscode-checkbox" className="text-sm font-medium text-gray-700 cursor-pointer whitespace-nowrap">
+                      Open with VS Code
+                    </label>
+                  </div>
+                </div>
+
+                {/* Right Section: File Operations */}
+                <div className="flex items-center space-x-2">
+                  <input
+                    type="file"
+                    accept=".urdf,.xml"
+                    onChange={handleFileImport}
+                    className="hidden"
+                    id="urdf-file-input"
+                  />
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => document.getElementById('urdf-file-input')?.click()}
+                    className="whitespace-nowrap bg-blue-50 hover:bg-blue-100 border-blue-200"
+                  >
+                    <Upload className="h-4 w-4 mr-2" />
+                    Import URDF
+                  </Button>
+                  
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={downloadUrdf}
+                    disabled={!urdfContent}
+                    className="whitespace-nowrap bg-green-50 hover:bg-green-100 border-green-200"
+                  >
+                    <Download className="h-4 w-4 mr-2" />
+                    Export
+                  </Button>
+                </div>
+              </div>
+
+              {/* Row 3: File Name */}
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <span className="text-sm font-medium">File Name:</span>
+                  <input
+                    type="text"
+                    value={urdfFileName}
+                    onChange={(e) => setUrdfFileName(e.target.value)}
+                    className="px-2 py-1 text-sm border rounded w-48"
+                    placeholder="Enter filename..."
+                  />
+                </div>
+                
+                <div className="flex items-center space-x-2 text-sm text-gray-600">
+                  <span>Ready for editing</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Editor Content Area */}
+            <div className="flex flex-1 overflow-hidden">
+              {/* Editor Panel */}
+              <div className="flex-1 flex flex-col">
+                <div className="flex items-center justify-between p-2 bg-gray-100 border-b">
+                  <h3 className="text-sm font-medium">URDF Editor</h3>
+                  <div className="flex items-center space-x-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setShowUrdfPreview(!showUrdfPreview)}
+                    >
+                      <Eye className="h-4 w-4 mr-1" />
+                      {showUrdfPreview ? 'Hide' : 'Show'} Preview
+                    </Button>
+                  </div>
+                </div>
+                
+                <Textarea
+                  value={urdfContent}
+                  onChange={(e) => handleUrdfContentChange(e.target.value)}
+                  className="flex-1 font-mono text-sm resize-none rounded-none border-0"
+                  placeholder="Enter your URDF content here or select a template above...
+
+Example URDF structure:
+<?xml version='1.0'?>
+<robot name='my_robot'>
+  <link name='base_link'>
+    <visual>
+      <geometry>
+        <box size='1 1 1'/>
+      </geometry>
+    </visual>
+  </link>
+</robot>"
+                  style={{ minHeight: '400px' }}
+                />
+              </div>
+
+              {/* Preview/Validation Panel */}
+              {showUrdfPreview && (
+                <div className="w-1/3 border-l">
+                  <div className="p-2 bg-gray-100 border-b">
+                    <h3 className="text-sm font-medium">Validation & Info</h3>
+                  </div>
+                  <div className="p-4 overflow-y-auto" style={{ maxHeight: '400px' }}>
+                    {/* Validation Status */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-medium mb-2">Validation Status</h4>
+                      {isUrdfValid ? (
+                        <div className="flex items-center space-x-2 text-green-600">
+                          <CheckCircle className="h-4 w-4" />
+                          <span className="text-sm">URDF is valid</span>
+                        </div>
+                      ) : (
+                        <div className="space-y-2">
+                          <div className="flex items-center space-x-2 text-red-600">
+                            <AlertCircle className="h-4 w-4" />
+                            <span className="text-sm">URDF has errors</span>
+                          </div>
+                          <div className="space-y-1">
+                            {urdfValidationErrors.map((error, index) => (
+                              <div key={index} className="text-xs text-red-600 bg-red-50 p-2 rounded">
+                                {error}
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* File Statistics */}
+                    <div className="mb-4">
+                      <h4 className="text-sm font-medium mb-2">Statistics</h4>
+                      <div className="space-y-1 text-xs text-gray-600">
+                        <div>Lines: {urdfContent.split('\n').length}</div>
+                        <div>Characters: {urdfContent.length}</div>
+                        <div>Links: {(urdfContent.match(/<link/g) || []).length}</div>
+                        <div>Joints: {(urdfContent.match(/<joint/g) || []).length}</div>
+                      </div>
+                    </div>
+
+                    {/* Quick Help */}
+                    <div>
+                      <h4 className="text-sm font-medium mb-2">Quick Help</h4>
+                      <div className="space-y-2 text-xs text-gray-600">
+                        <div>• Every robot needs a name attribute</div>
+                        <div>• Links define robot parts</div>
+                        <div>• Joints connect links</div>
+                        <div>• Visual elements define appearance</div>
+                        <div>• Collision elements define physics</div>
+                        <div>• Inertial elements define mass properties</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center justify-between p-4 border-t bg-gray-50">
+              {/* Left Section: Editor Actions */}
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setUrdfContent("")
+                    setSelectedUrdfTemplate("blank")
+                    setUrdfFileName("robot_model.urdf")
+                    setIsUrdfValid(true)
+                    setUrdfValidationErrors([])
+                  }}
+                >
+                  Clear Editor
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => loadUrdfTemplate("blank")}
+                >
+                  Reset to Blank
+                </Button>
+              </div>
+              
+              {/* Right Section: File Actions */}
+              <div className="flex items-center space-x-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setShowUrdfEditor(false)}
+                  className="bg-transparent"
+                >
+                  Close
+                </Button>
+                <Button
+                  onClick={saveToMechanicalWorkspace}
+                  size="sm"
+                  disabled={!isUrdfValid || !urdfContent}
+                  className="bg-gradient-to-r from-green-600 to-blue-600 hover:from-green-700 hover:to-blue-700"
+                >
+                  <Box className="h-4 w-4 mr-2" />
+                  Save to Workspace
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

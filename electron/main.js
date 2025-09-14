@@ -19,7 +19,8 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: true,
       enableRemoteModule: false,
-      webSecurity: true
+      webSecurity: true,
+      preload: path.join(__dirname, 'preload.js') // Enable preload script
     },
     icon: path.join(__dirname, '../public/favicon.ico'),
     titleBarStyle: 'default',
